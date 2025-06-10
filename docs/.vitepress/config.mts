@@ -2,6 +2,7 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
+  base: '/common-commands/',
   title: "Common Commands",
   description: "Common Command - Quick Copy",
   themeConfig: {
