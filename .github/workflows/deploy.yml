@@ -68,30 +68,105 @@
 
 
 
-name: Deploy
+# name: Deploy
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+#       - uses: actions/setup-node@v4
+#         with:
+#           node-version: 20
+#       - run: npm i pnpm -g
+#       - run: pnpm install --frozen-lockfile
+
+#       - name: Build
+#         run: pnpm docs:build
+
+#       - name: Deploy
+#         uses: peaceiris/actions-gh-pages@v4
+#         with:
+#           github_token: ${{ secrets.GITHUB_TOKEN }}
+#           publish_dir: docs/.vitepress/dist
+
+
+
+
+name: Deploy VitePress to GitHub Pages
 
 on:
+  # 触发条件：推送到 main 分支时自动部署
   push:
-    branches:
-      - main
+    branches: [main]
+  # 允许手动触发部署
+  workflow_dispatch:
+
+# 设置必要的权限
+permissions:
+  contents: read    # 读取仓库内容
+  pages: write      # 写入 GitHub Pages
+  id-token: write   # 用于 OIDC 身份验证
+
+# 并发控制，避免重复部署
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      # 1. 检出代码
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          node-version: 20
-      - run: npm i pnpm -g
-      - run: pnpm install --frozen-lockfile
+          fetch-depth: 0  # 获取完整历史（用于 lastUpdated 等功能）
 
-      - name: Build
-        run: pnpm docs:build
-
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v4
+      # 2. 设置 PNPM
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs/.vitepress/dist
+          version: 9
 
+      # 3. 设置 Node.js
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm  # 使用 PNPM 缓存
+
+      # 4. 自动配置 GitHub Pages
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      # 5. 安装依赖（严格使用 lockfile）
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # 6. 构建 VitePress 站点
+      - name: Build with VitePress
+        run: pnpm run docs:build
+
+      # 7. 上传构建产物
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/.vitepress/dist  # VitePress 默认输出目录
+
+  deploy:
+    needs: build    # 依赖 build 任务
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      # 8. 官方部署到 GitHub Pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
