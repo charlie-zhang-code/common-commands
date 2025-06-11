@@ -4,22 +4,11 @@ layout: home
 
 hero:
   name: "Common Commands"
-  text: "Common Command - Quick Copy"
-  tagline: My great project tagline
+  text: "个人常用命令 & 代码片段等速查手册"
+  tagline: 不再重复 DP，一键复制高频命令
   actions:
     - theme: brand
-      text: Markdown Examples
-      link: /markdown-examples
-    - theme: alt
-      text: API Examples
-      link: /api-examples
-
-features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+      text: 阅览
+      link: /dev
 ---
 
