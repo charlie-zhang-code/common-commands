@@ -19,7 +19,7 @@ export default defineConfig({
       provider: "local",
     },
     editLink: {
-      pattern: "https://github.com/vuejs/vitepress/edit/main/docs/:path",
+      pattern: "https://github.com/charlie-zhang-code/edit/main/docs/:path",
     },
     nav: getNavData(),
     sidebar: getSidebarData(),
