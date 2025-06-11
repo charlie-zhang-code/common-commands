@@ -30,3 +30,11 @@ git add .
 git commit -m "修复了登录页面bug"
 git push origin main
 ```
+
+懒得写 commit 描述信息时，直接 `git commit -m "upload"`，虽然不完全符合规范，但可以快速上传。
+
+```bash
+git add .
+git commit -m "upload"
+git push origin main
+```

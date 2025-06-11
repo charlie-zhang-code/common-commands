@@ -18,9 +18,6 @@ export default defineConfig({
     search: {
       provider: "local",
     },
-    editLink: {
-      pattern: "https://github.com/charlie-zhang-code/edit/main/docs/:path",
-    },
     nav: getNavData(),
     sidebar: getSidebarData(),
     // https://vitepress.dev/reference/default-theme-config
